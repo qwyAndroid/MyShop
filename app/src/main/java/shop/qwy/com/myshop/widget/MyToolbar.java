@@ -57,6 +57,8 @@ public class MyToolbar extends Toolbar{
                 showSearchView();
                 hideTitleView();
             }
+
+            a.recycle();
         }
     }
     private void setRightIcon(Drawable rightIcon) {
