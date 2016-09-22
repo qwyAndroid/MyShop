@@ -57,7 +57,7 @@
                     android:id="@+id/imgview_small_top"
                     android:layout_width="160dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/img_0_small1"
+
 
 
                     />
@@ -71,7 +71,7 @@
                     android:id="@+id/imgview_small_bottom"
                     android:layout_width="160dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/img_0_small2"
+
 
 
                     />
@@ -91,7 +91,7 @@
                 android:id="@+id/imgview_big"
                 android:layout_width="160dp"
                 android:layout_height="100dp"
-                android:src="@drawable/img_big_0"
+
                 />
 
 

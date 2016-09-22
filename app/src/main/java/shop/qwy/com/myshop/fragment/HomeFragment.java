@@ -32,11 +32,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import shop.qwy.com.myshop.Contants;
 import shop.qwy.com.myshop.R;
 import shop.qwy.com.myshop.adapter.DividerItemDecortion;
 import shop.qwy.com.myshop.adapter.HomeCategoryAdapter;
 import shop.qwy.com.myshop.bean.Banner;
+import shop.qwy.com.myshop.bean.Campaign;
+import shop.qwy.com.myshop.bean.HomeCampaign;
 import shop.qwy.com.myshop.bean.HomeCategory;
+import shop.qwy.com.myshop.http.BaseCallBack;
+import shop.qwy.com.myshop.http.OkHttpHelper;
+import shop.qwy.com.myshop.http.SportsCallback;
 
 /**
  * 作者：仇伟阳
@@ -50,6 +56,7 @@ public class HomeFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private List<Banner> mBanner;
     private Gson mGson = new Gson();
+    private OkHttpHelper mHelper;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,54 +72,95 @@ public class HomeFragment extends Fragment{
 
     private void initRecyclerView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        String url = Contants.API.CAMPAIGN_HOME;
 
-        List<HomeCategory> datas = new ArrayList<>(15);
+       mHelper.get(url, new BaseCallBack<List<HomeCampaign>>() {
+           @Override
+           public void onBeforeRequest(Request request) {
 
-        HomeCategory category = new HomeCategory("热门活动",R.drawable.img_big_1,R.drawable.img_1_small1,R.drawable.img_1_small2);
-        datas.add(category);
+           }
 
-        category = new HomeCategory("有利可图",R.drawable.img_big_4,R.drawable.img_4_small1,R.drawable.img_4_small2);
-        datas.add(category);
-        category = new HomeCategory("品牌街",R.drawable.img_big_2,R.drawable.img_2_small1,R.drawable.img_2_small2);
-        datas.add(category);
+           @Override
+           public void onFailure(Request request, IOException e) {
 
-        category = new HomeCategory("金融街 包赚翻",R.drawable.img_big_1,R.drawable.img_3_small1,R.drawable.imag_3_small2);
-        datas.add(category);
+           }
 
-        category = new HomeCategory("超值购",R.drawable.img_big_0,R.drawable.img_0_small1,R.drawable.img_0_small2);
-        datas.add(category);
-        HomeCategoryAdapter adapter = new HomeCategoryAdapter(datas);
+           @Override
+           public void onResponse(Response response) {
+
+           }
+
+           @Override
+           public void onSuccess(Response response, List<HomeCampaign> homeCampaigns) {
+               initData(homeCampaigns);
+           }
+
+
+           @Override
+           public void onError(Response response, int code, Exception e) {
+
+           }
+       });
+
+
+
+
+    }
+
+    private void initData(List<HomeCampaign> homeCampaigns) {
+        HomeCategoryAdapter adapter = new HomeCategoryAdapter(homeCampaigns,getContext());
+        adapter.setOnItemClickListener(new HomeCategoryAdapter.onItemClickListener() {
+            @Override
+            public void onClick(View v, Campaign campaign) {
+                Toast.makeText(getContext(),"title="+campaign.getTitle(),Toast.LENGTH_LONG).show();
+            }
+        });
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(new DividerItemDecortion());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
     }
-    private void requestImagers(){
-        String url ="http://112.124.22.238:8081/course_api/banner/query?type=1";
-        OkHttpClient client = new OkHttpClient();
-//        RequestBody body = new FormBody.Builder()
-//                .add("type","1")
-//
-//                .build();
-        Request request = new Request.Builder()
-                .url(url)
-//                .post(body)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
 
+    private void requestImagers(){
+        String url = Contants.API.BASE_URL+"banner/query?type=1";
+//        OkHttpClient client = new OkHttpClient();
+////        RequestBody body = new FormBody.Builder()
+////                .add("type","1")
+////
+////                .build();
+//        Request request = new Request.Builder()
+//                .url(url)
+////                .post(body)
+//                .build();
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                if(response.isSuccessful()){
+//                    String json = response.body().string();
+//                    Type type = new TypeToken<List<Banner>>(){}.getType();
+//                    mBanner =mGson.fromJson(json,type);
+//
+//                    initSlider();
+//                }
+//            }
+//        });
+        mHelper = OkHttpHelper.getInstance();
+        mHelper.get(url, new SportsCallback<List<Banner>>(getContext()) {
+
+
+            @Override
+            public void onSuccess(Response response, List<Banner> banners) {
+                mBanner = banners;
+                initSlider();
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()){
-                    String json = response.body().string();
-                    Type type = new TypeToken<List<Banner>>(){}.getType();
-                    mBanner =mGson.fromJson(json,type);
+            public void onError(Response response, int code, Exception e) {
 
-                    initSlider();
-                }
             }
         });
     }
@@ -142,18 +190,18 @@ public class HomeFragment extends Fragment{
         sliderShow.addOnPageChangeListener(new ViewPagerEx.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d(TAG,"onPageScrolled");
+//                Log.d(TAG,"onPageScrolled");
             }
 
             @Override
             public void onPageSelected(int position) {
                 sliderShow.setCurrentPosition(position);
-                Log.d(TAG,"onPageSelected" +  position);
+//                Log.d(TAG,"onPageSelected" +  position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.d(TAG,"onPageScrollStateChanged");
+//                Log.d(TAG,"onPageScrollStateChanged");
             }
         });
 

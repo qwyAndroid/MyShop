@@ -18,7 +18,11 @@ allprojects {
 //        maven{ url 'http://maven.oschina.net/content/groups/public/'}
     }
 }
-
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
