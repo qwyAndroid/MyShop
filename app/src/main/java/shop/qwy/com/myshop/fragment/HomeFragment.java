@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment{
             }
         });
         mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addItemDecoration(new DividerItemDecortion());
+        mRecyclerView.addItemDecoration(new DividerItemDecortion());//add decoration 分割线
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
     }
 

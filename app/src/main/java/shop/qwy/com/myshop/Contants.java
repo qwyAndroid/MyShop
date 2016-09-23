@@ -11,5 +11,6 @@ public class Contants {
 
         public static final String CAMPAIGN_HOME=BASE_URL + "campaign/recommend";
 
+        public static final String WARES_HOT=BASE_URL + "wares/hot";
     }
 }
