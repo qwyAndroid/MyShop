@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import shop.qwy.com.myshop.bean.Wears;
 
 /**
  * created by qwyAndroid on 2016/9/24
@@ -48,6 +47,9 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
 
     @Override
     public int getItemCount() {
+        if(mDatas == null && mDatas.size()<=0){
+            return 0;
+        }
         return mDatas.size();
     }
 

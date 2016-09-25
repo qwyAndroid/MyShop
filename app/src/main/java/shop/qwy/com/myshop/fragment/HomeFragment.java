@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment{
             //default indicator
 //        sliderShow.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         sliderShow.setPresetTransformer(SliderLayout.Transformer.RotateUp);
-        sliderShow.setDuration(300);
+        sliderShow.setDuration(3000);
 
         sliderShow.addOnPageChangeListener(new ViewPagerEx.OnPageChangeListener() {
             @Override

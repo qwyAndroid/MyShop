@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
         Tab mine = new Tab(R.drawable.selector_icon_mine,R.string.mine,MineFragment.class);
 
         mTabs.add(home);
+        mTabs.add(hot);
         mTabs.add(cart);
         mTabs.add(category);
-        mTabs.add(hot);
         mTabs.add(mine);
 
         mInflate = LayoutInflater.from(this);

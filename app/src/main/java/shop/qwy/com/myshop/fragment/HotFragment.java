@@ -45,7 +45,7 @@ public class HotFragment extends Fragment{
 
     private List<Wears> datas;
 
-    private HotWearsAdapter wearsAdapter;
+//    private HotWearsAdapter wearsAdapter;
     private HWAdapter mAdapter;
 
     private  static final int STATE_NORMAL=0;
