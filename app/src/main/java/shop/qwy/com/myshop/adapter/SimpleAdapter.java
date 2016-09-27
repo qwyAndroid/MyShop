@@ -1,5 +1,7 @@
 package shop.qwy.com.myshop.adapter;
 
+import android.content.Context;
+
 import java.util.List;
 
 /**
@@ -7,8 +9,8 @@ import java.util.List;
  */
 public abstract class SimpleAdapter<T> extends BaseAdapter<T,BaseViewHolder>{
 
-    public SimpleAdapter(List<T> datas, int resourceId) {
-        super(datas, resourceId);
+    public SimpleAdapter(Context context,List<T> datas, int resourceId) {
+        super(context,datas, resourceId);
     }
 
 

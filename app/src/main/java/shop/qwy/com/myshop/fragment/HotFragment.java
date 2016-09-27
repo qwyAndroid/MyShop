@@ -129,7 +129,7 @@ public class HotFragment extends Fragment{
         switch (state) {
             case STATE_NORMAL:
 //                wearsAdapter = new HotWearsAdapter(datas);
-                mAdapter = new HWAdapter(datas,R.layout.template_hot_wears);
+                mAdapter = new HWAdapter(getContext(),datas,R.layout.template_hot_wears);
                 mAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {

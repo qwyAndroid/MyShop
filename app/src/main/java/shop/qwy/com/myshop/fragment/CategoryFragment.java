@@ -35,6 +35,7 @@ import shop.qwy.com.myshop.bean.CategoryPage;
 import shop.qwy.com.myshop.bean.CategoryWaers;
 import shop.qwy.com.myshop.http.OkHttpHelper;
 import shop.qwy.com.myshop.http.SportsCallback;
+import shop.qwy.com.myshop.utlis.ToastUtils;
 
 /**
  * 作者：仇伟阳
@@ -52,7 +53,7 @@ public class CategoryFragment extends Fragment{
 
     private List<CategoryWaers> mWaers;
 //    categoryId=11&curPage=1&pageSize=10
-    private int categoryId = 1;
+    private long categoryId = 1;
     private int curPage = 1;
     private int pageSize=10;
     private int totalPage = 1;
@@ -76,12 +77,12 @@ public class CategoryFragment extends Fragment{
 
         requestBannerData();
 
-        requestWaresData();
+//        requestWaresData(categoryId);
         initFreshLayout();
         return view;
     }
 
-    private void requestWaresData() {
+    private void requestWaresData(long categoryId) {
         String url = Contants.API.WARES_LIST+"?categoryId="+categoryId+
                 "&curPage="+curPage+"&pageSize="+pageSize;
         mHelper.get(url, new SportsCallback<CategoryPage<CategoryWaers>>(getContext()) {
@@ -89,13 +90,13 @@ public class CategoryFragment extends Fragment{
 
             @Override
             public void onSuccess(Response response, CategoryPage<CategoryWaers> categoryPage) {
-                mWaers = categoryPage.getList();
+//                mWaers = categoryPage.getList();
 
                 curPage = categoryPage.getCurrentPage();
-                pageSize = categoryPage.getPageSize();
+//                pageSize = categoryPage.getPageSize();
                 totalPage = categoryPage.getTotalPage();
                 
-                showWaresData();
+                showWaresData(categoryPage.getList());
             }
 
             @Override
@@ -105,31 +106,39 @@ public class CategoryFragment extends Fragment{
         });
     }
 
-    private void showWaresData() {
+    private void showWaresData(final List<CategoryWaers> wares) {
         switch (state){
             case STATE_NORMAL:
-                categoryWaersAdapter = new
-                        CategoryWaersAdapter(mWaers, R.layout.template_grid_wares);
+                if(categoryWaersAdapter == null) {
+                    categoryWaersAdapter = new
+                            CategoryWaersAdapter(getContext(),wares, R.layout.template_grid_wares);
 
-                categoryWaersAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Toast.makeText(getContext(),"￥"+mWaers.get(position).getPrice(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-                mWaresRecycleView.setAdapter(categoryWaersAdapter);
-                mWaresRecycleView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
-                mWaresRecycleView.setItemAnimator(new DefaultItemAnimator());
-                mWaresRecycleView.setLayoutManager(new GridLayoutManager(getContext(),2));
+                    categoryWaersAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Toast.makeText(getContext(), "￥" + wares.get(position).getPrice(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    mWaresRecycleView.setAdapter(categoryWaersAdapter);
+                    mWaresRecycleView.setLayoutManager(new GridLayoutManager(getContext(),2));
+                    mWaresRecycleView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+                    mWaresRecycleView.setItemAnimator(new DefaultItemAnimator());
+
+                }else{
+                    categoryWaersAdapter.clearData();
+                    categoryWaersAdapter.addData(wares);
+                }
+
                 break;
             case STATE_REFREH:
                 categoryWaersAdapter.clearData();
-                categoryWaersAdapter.addData(mWaers);
+                categoryWaersAdapter.addData(wares);
 
                 mWaresRecycleView.scrollToPosition(0);
                 mRefreshLayout.finishRefresh();
             case STATE_MORE:
-                categoryWaersAdapter.addData(categoryWaersAdapter.getDatas().size(),mWaers);
+                categoryWaersAdapter.addData(categoryWaersAdapter.getDatas().size(),wares);
 
                 mWaresRecycleView.scrollToPosition(categoryWaersAdapter.getDatas().size());
                 mRefreshLayout.finishRefreshLoadMore();
@@ -153,8 +162,11 @@ public class CategoryFragment extends Fragment{
                 if(curPage < totalPage){
                     refreshLoadMore();
                 }else{
-                Toast.makeText(getContext(),"沒有更多了，亲 —— _ ——",Toast.LENGTH_SHORT).show();
-                mRefreshLayout.finishRefreshLoadMore();
+                    Toast toast = new Toast(getContext());
+                    if(toast != null) {
+                        toast.makeText(getContext(), "沒有更多了，亲 —— _ ——", Toast.LENGTH_SHORT).show();
+                    }
+                    mRefreshLayout.finishRefreshLoadMore();
                 }
             }
         });
@@ -163,14 +175,14 @@ public class CategoryFragment extends Fragment{
     private void refreshLoadMore() {
         curPage += 1;
         state = STATE_MORE;
-        requestWaresData();
+        requestWaresData(categoryId);
     }
 
     private void refreshWaersData() {
 //        categoryId = mCategory.get()
         curPage = 1 ;
         state = STATE_REFREH;
-        requestWaresData();
+        requestWaresData(categoryId);
     }
 
     private void requestBannerData() {
@@ -212,9 +224,13 @@ public class CategoryFragment extends Fragment{
 
             @Override
             public void onSuccess(Response response, List<Category> categories) {
-                mCategory = categories;
+//                mCategory = categories;
 
-                showCategoryData();
+                showCategoryData(categories);
+                if(categories !=null && categories.size()>0){
+                    categoryId = categories.get(0).getId();
+                    requestWaresData(categoryId);
+            }
             }
 
             @Override
@@ -224,8 +240,8 @@ public class CategoryFragment extends Fragment{
         });
     }
 
-    private void showCategoryData() {
-        CategoryAdapter categoryAdapter = new CategoryAdapter(mCategory, R.layout.template_single_text);
+    private void showCategoryData(final List<Category> categories) {
+        final CategoryAdapter categoryAdapter = new CategoryAdapter(getContext(),categories, R.layout.template_single_text);
         mRecycleView.setAdapter(categoryAdapter);
         mRecycleView.addItemDecoration(new DividerItemDecortion());
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -233,12 +249,18 @@ public class CategoryFragment extends Fragment{
         categoryAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                if (position <= 9) {
 //                Toast.makeText(getContext(),mCategory.get(position).getName(),Toast.LENGTH_SHORT).show();
-                categoryId = position+1;
-                curPage = 1;
-                state = STATE_NORMAL;
-                requestWaresData();
+//                categoryId = categoryAdapter.getItem(position).getId();
+                    categoryId = position + 1;
+                    curPage = 1;
 
+                    state = STATE_NORMAL;
+                    requestWaresData(categoryId);
+
+                }else{
+                    ToastUtils.show(getContext(),"暂时没有商品");
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
 package shop.qwy.com.myshop.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
 
     protected List<T> mDatas;
     protected int mResourceId;
+    protected Context context;
     protected OnItemClickListener mListener;
 
     public interface OnItemClickListener{
@@ -25,8 +27,9 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
         this.mListener = listener;
 
     }
-    public BaseAdapter(List<T> datas, int resourceId) {
+    public BaseAdapter(Context context,List<T> datas, int resourceId) {
         this.mDatas = datas;
+        this.context = context;
         this.mResourceId = resourceId;
     }
 
@@ -77,7 +80,7 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
         if (data != null && data.size()>0){
             mDatas.addAll(data);
 
-            notifyItemChanged(i,mDatas.size());
+            notifyItemRangeChanged(i,mDatas.size());
         }
     }
 }

@@ -1,6 +1,7 @@
 package shop.qwy.com.myshop;
 
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentTabHost mTabHost;
     private LayoutInflater mInflate;
+
+    private CartFragment cartFragment;
 
     private List<Tab> mTabs = new ArrayList<>(5);
     @Override
@@ -60,8 +63,40 @@ public class MainActivity extends AppCompatActivity {
             mTabHost.addTab(tabSpec, tab.getFragment(), null);
         }
 
+
+
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                if (tabId == getString(R.string.cart)){
+                    refData();
+                }
+            }
+        });
         mTabHost.getTabWidget().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
         mTabHost.setCurrentTab(0);
+    }
+
+    private void refData() {
+
+        if(cartFragment ==null) {
+
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(getString(R.string.cart));
+
+            if (fragment != null) {
+
+                cartFragment = (CartFragment) fragment;
+
+                cartFragment.refData();
+//                cartFragment.changeToolbar();
+            }
+        }
+        else
+        {
+            cartFragment.refData();
+//            cartFragment.changeToolbar();
+        }
+
     }
 
     private View buildIndicator(Tab tab) {

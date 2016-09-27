@@ -1,5 +1,6 @@
 package shop.qwy.com.myshop.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,8 +14,8 @@ import shop.qwy.com.myshop.bean.Category;
  */
 public class CategoryAdapter extends SimpleAdapter<Category>{
 
-    public CategoryAdapter(List<Category> datas, int resourceId) {
-        super(datas, resourceId);
+    public CategoryAdapter(Context context, List<Category> datas, int resourceId) {
+        super(context,datas, resourceId);
     }
 
     @Override
