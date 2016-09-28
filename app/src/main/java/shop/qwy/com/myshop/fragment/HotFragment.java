@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import shop.qwy.com.myshop.bean.Page;
 import shop.qwy.com.myshop.bean.Wears;
 import shop.qwy.com.myshop.http.OkHttpHelper;
 import shop.qwy.com.myshop.http.SportsCallback;
+import shop.qwy.com.myshop.utlis.Pager;
 
 /**
  * 作者：仇伟阳
@@ -61,17 +63,65 @@ public class HotFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_hot, container, false);
         mRefreshView = (MaterialRefreshLayout) view.findViewById(R.id.refresh_view);
         mRecycleView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        initRefreshLayout();
-        getData();
+
+        init();
+//        initRefreshLayout();
+//        getData();
         return view;
     }
+
+    private void init() {
+        Pager pager = Pager.newBuilder()
+                .setUrl( Contants.API.WARES_HOT)
+                .setCanLoadMore(true)
+                .setmRefreshView(mRefreshView)
+                .setOnPageListener(new Pager.OnPageListener() {
+                    @Override
+                    public void onLoad(final List datas, int totalPage, int totalCount) {
+                        mAdapter = new HWAdapter(getContext(),datas,R.layout.template_hot_wears);
+                        mAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Wears wears = (Wears) datas.get(position);
+                                Toast.makeText(getContext(),wears.getPrice()+"",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        mRecycleView.setAdapter(mAdapter);
+                        mRecycleView.setItemAnimator(new DefaultItemAnimator());
+                        mRecycleView.addItemDecoration(new DividerItemDecoration(getContext(),
+                                DividerItemDecoration.VERTICAL_LIST));
+                        mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+
+                    @Override
+                    public void onFresh(List datas, int totalPage, int totalCount) {
+                        mAdapter.clearData();
+                        mAdapter.addData(datas);
+
+                        mRecycleView.scrollToPosition(0);
+//                        mRefreshView.finishRefresh();
+                    }
+
+                    @Override
+                    public void onLoadmore(List datas, int totalPage, int totalCount) {
+                        mAdapter.addData(mAdapter.getDatas().size(),datas);
+
+                        mRecycleView.scrollToPosition(mAdapter.getDatas().size());
+//                        mRefreshView.finishRefreshLoadMore();
+                    }
+                }).setPageSize(10)
+                .build(getContext(),new TypeToken<Page<Wears>>(){}.getType());
+
+        pager.request();
+    }
+
     private  void initRefreshLayout(){
 
         mRefreshView.setLoadMore(true);
         mRefreshView.setMaterialRefreshListener(new MaterialRefreshListener() {
             @Override
             public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
-
+                mRefreshView.setLoadMore(true);
                refreshData();
 
             }
@@ -84,6 +134,7 @@ public class HotFragment extends Fragment{
                 else{
                     Toast.makeText(getContext(),"沒有更多了，亲 —— _ ——",Toast.LENGTH_SHORT).show();
                     mRefreshView.finishRefreshLoadMore();
+                    mRefreshView.setLoadMore(false);
                 }
 
 

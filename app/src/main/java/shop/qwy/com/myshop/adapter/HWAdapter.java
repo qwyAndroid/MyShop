@@ -3,6 +3,7 @@ package shop.qwy.com.myshop.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.widget.Button;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -35,15 +36,26 @@ public class HWAdapter extends SimpleAdapter<Wears>{
         holder.getTextView(R.id.text_title).setText(wares.getName());
         holder.getTextView(R.id.text_price).setText("￥"+wares.getPrice());
 
-        holder.getButton(R.id.buynow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCartProvider.put(convertData(wares));
-                ToastUtils.show(mContext,"已添加到购物车");
-            }
-        });
+        Button button = holder.getButton(R.id.buynow);
+        if (button != null) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCartProvider.put(convertData(wares));
+                    ToastUtils.show(mContext, "已添加到购物车");
+                }
+            });
+        }
     }
+    public void  resetLayout(int layoutId){
 
+
+        this.mResourceId  = layoutId;
+
+        notifyItemRangeChanged(0,getDatas().size());
+
+
+    }
     public ShoppingCart convertData(Wears item){
 
         ShoppingCart cart = new ShoppingCart();

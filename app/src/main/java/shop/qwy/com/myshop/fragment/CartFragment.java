@@ -74,7 +74,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
     private void initToolbar() {
         mToolbar.setTitle("购物车");
         mToolbar.getRightButton().setVisibility(View.VISIBLE);
-        mToolbar.setRightButtonText("编辑");
+        mToolbar.setRightButtonIcon(R.drawable.icon_edit);
 
         mToolbar.getRightButton().setOnClickListener(this);
         mToolbar.getRightButton().setTag(ACTION_EDIT);
@@ -125,7 +125,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
         BtnOrder.setVisibility(View.GONE);
         BtnDel.setVisibility(View.VISIBLE);
         mToolbar.getRightButton().setTag(ACTION_CAMPLATE);
-        mToolbar.getRightButton().setText("完成");
+        mToolbar.setRightButtonIcon(R.drawable.icon_completed);
 
         cartAdapter.checkAll_None(false);
         checkboxAll.setChecked(false);
@@ -136,7 +136,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
         BtnOrder.setVisibility(View.VISIBLE);
         BtnDel.setVisibility(View.GONE);
         mToolbar.getRightButton().setTag(ACTION_EDIT);
-        mToolbar.getRightButton().setText("编辑");
+        mToolbar.setRightButtonIcon(R.drawable.icon_edit);
 
         cartAdapter.checkAll_None(true);
         checkboxAll.setChecked(true);

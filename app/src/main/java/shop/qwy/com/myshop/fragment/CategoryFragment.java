@@ -1,5 +1,6 @@
 package shop.qwy.com.myshop.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -162,11 +163,12 @@ public class CategoryFragment extends Fragment{
                 if(curPage < totalPage){
                     refreshLoadMore();
                 }else{
-                    Toast toast = new Toast(getContext());
-                    if(toast != null) {
-                        toast.makeText(getContext(), "沒有更多了，亲 —— _ ——", Toast.LENGTH_SHORT).show();
-                    }
+
+
+                    Toast.makeText(getContext(), "沒有更多了，亲 —— _ ——", Toast.LENGTH_SHORT).show();
+
                     mRefreshLayout.finishRefreshLoadMore();
+                    mRefreshLayout.setLoadMore(false);
                 }
             }
         });

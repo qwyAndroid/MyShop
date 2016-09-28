@@ -30,13 +30,13 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:visibility="gone"
-        android:layout_weight="111111"
+        android:layout_weight="1111111"
         />
 
     <Button
         android:id="@+id/toolbar_rightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:textColor="@color/white"

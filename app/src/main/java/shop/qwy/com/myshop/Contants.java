@@ -4,6 +4,9 @@ package shop.qwy.com.myshop;
  * created by qwyAndroid on 2016/9/22
  */
 public class Contants {
+
+    public static final String  COMPAINGAIN_ID="compaigin_id";
+
     public static class API{
 
 
@@ -19,5 +22,7 @@ public class Contants {
 
         //category's wares url
         public static final String WARES_LIST=BASE_URL +"wares/list";
+
+        public static final String WARES_CAMPAIN_LIST=BASE_URL +"wares/campaign/list";
     }
 }

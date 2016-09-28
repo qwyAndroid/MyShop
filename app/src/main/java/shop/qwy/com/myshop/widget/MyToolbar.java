@@ -149,5 +149,8 @@ public class MyToolbar extends Toolbar{
 
         return this.mRightButton;
     }
-
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void setRightButtonIcon(int rightIcon) {
+        setRightIcon(getResources().getDrawable(rightIcon));
+    }
 }

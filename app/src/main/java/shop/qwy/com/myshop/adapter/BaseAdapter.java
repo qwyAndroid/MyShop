@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
 
     protected List<T> mDatas;
     protected int mResourceId;
-    protected Context context;
+    protected final Context context;
     protected OnItemClickListener mListener;
 
     public interface OnItemClickListener{
@@ -32,6 +33,7 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
         this.context = context;
         this.mResourceId = resourceId;
     }
+
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,14 +75,51 @@ public abstract class BaseAdapter<T,H extends BaseViewHolder> extends RecyclerVi
     }
     public void clearData(){
 
-        mDatas.clear();
-        notifyItemRangeRemoved(0,mDatas.size());
-    }
-    public void addData(int i, List<T> data) {
-        if (data != null && data.size()>0){
-            mDatas.addAll(data);
+        for (Iterator it = mDatas.iterator(); it.hasNext();){
 
-            notifyItemRangeChanged(i,mDatas.size());
+            T t = (T) it.next();
+            int position = mDatas.indexOf(t);
+            it.remove();
+            notifyItemRemoved(position);
         }
+    }
+    public void addData(int position, List<T> list) {
+        if(list !=null && list.size()>0) {
+
+            for (T t:list) {
+                mDatas.add(position, t);
+                notifyItemInserted(position);
+            }
+
+        }
+    }
+
+    public void refreshData(List<T> list){
+
+        if(list !=null && list.size()>0){
+
+            clearData();
+            int size = list.size();
+            for (int i=0;i<size;i++){
+                mDatas.add(i,list.get(i));
+                notifyItemInserted(i);
+            }
+
+        }
+    }
+
+    public void loadMoreData(List<T> list){
+
+        if(list !=null && list.size()>0){
+
+            int size = list.size();
+            int begin = mDatas.size();
+            for (int i=0;i<size;i++){
+                mDatas.add(list.get(i));
+                notifyItemInserted(i+begin);
+            }
+
+        }
+
     }
 }

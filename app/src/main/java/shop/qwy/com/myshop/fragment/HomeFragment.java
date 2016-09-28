@@ -1,5 +1,6 @@
 package shop.qwy.com.myshop.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import shop.qwy.com.myshop.Contants;
 import shop.qwy.com.myshop.R;
+import shop.qwy.com.myshop.WearsListActivity;
 import shop.qwy.com.myshop.adapter.DividerItemDecortion;
 import shop.qwy.com.myshop.adapter.HomeCategoryAdapter;
 import shop.qwy.com.myshop.bean.Banner;
@@ -112,7 +114,12 @@ public class HomeFragment extends Fragment{
         adapter.setOnItemClickListener(new HomeCategoryAdapter.onItemClickListener() {
             @Override
             public void onClick(View v, Campaign campaign) {
-                Toast.makeText(getContext(),"title="+campaign.getTitle(),Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(),"title="+campaign.getTitle(),Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(getActivity(), WearsListActivity.class);
+                intent.putExtra(Contants.COMPAINGAIN_ID,campaign.getId());
+
+                startActivity(intent);
             }
         });
         mRecyclerView.setAdapter(adapter);
@@ -195,7 +202,7 @@ public class HomeFragment extends Fragment{
 
             @Override
             public void onPageSelected(int position) {
-                sliderShow.setCurrentPosition(position);
+//                sliderShow.setCurrentPosition(position);
 //                Log.d(TAG,"onPageSelected" +  position);
             }
 
