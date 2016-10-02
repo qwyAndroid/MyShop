@@ -76,39 +76,20 @@ public class HomeFragment extends Fragment{
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         String url = Contants.API.CAMPAIGN_HOME;
 
-       mHelper.get(url, new BaseCallBack<List<HomeCampaign>>() {
-           @Override
-           public void onBeforeRequest(Request request) {
+       mHelper.get(url, new SportsCallback<List<HomeCampaign>>(getActivity()) {
 
-           }
-
-           @Override
-           public void onFailure(Request request, IOException e) {
-
-           }
-
-           @Override
-           public void onResponse(Response response) {
-
-           }
 
            @Override
            public void onSuccess(Response response, List<HomeCampaign> homeCampaigns) {
                initData(homeCampaigns);
            }
 
-
            @Override
            public void onError(Response response, int code, Exception e) {
 
            }
        });
-
-
-
-
     }
-
     private void initData(List<HomeCampaign> homeCampaigns) {
         HomeCategoryAdapter adapter = new HomeCategoryAdapter(homeCampaigns,getContext());
         adapter.setOnItemClickListener(new HomeCategoryAdapter.onItemClickListener() {
@@ -169,6 +150,8 @@ public class HomeFragment extends Fragment{
             public void onError(Response response, int code, Exception e) {
 
             }
+
+
         });
     }
     private void initSlider() {//loading tab

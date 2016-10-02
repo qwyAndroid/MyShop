@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         mTabs.add(home);
         mTabs.add(hot);
-        mTabs.add(cart);
         mTabs.add(category);
+        mTabs.add(cart);
         mTabs.add(mine);
 
         mInflate = LayoutInflater.from(this);

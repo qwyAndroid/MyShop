@@ -15,10 +15,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import okhttp3.Response;
+import shop.qwy.com.myshop.Contants;
 import shop.qwy.com.myshop.R;
 import shop.qwy.com.myshop.adapter.CartAdapter;
 import shop.qwy.com.myshop.adapter.DividerItemDecoration;
 import shop.qwy.com.myshop.bean.ShoppingCart;
+import shop.qwy.com.myshop.bean.User;
+import shop.qwy.com.myshop.http.OkHttpHelper;
+import shop.qwy.com.myshop.http.SportsCallback;
 import shop.qwy.com.myshop.utlis.CartProvider;
 import shop.qwy.com.myshop.widget.MyToolbar;
 
@@ -41,6 +46,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
     private CartAdapter cartAdapter;
     private MyToolbar mToolbar;
 
+    private OkHttpHelper mHelper = OkHttpHelper.getInstance();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +75,23 @@ public class CartFragment extends Fragment implements View.OnClickListener {
                 cartAdapter.delItem();
             }
         });
+
+        BtnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHelper.get(Contants.API.USER_DETAIL, new SportsCallback<User>(getActivity()) {
+                    @Override
+                    public void onSuccess(Response response, User o) {
+                        Log.d("TAG","onsuccess"+response.code());
+                    }
+
+                    @Override
+                    public void onError(Response response, int code, Exception e) {
+                        Log.d("TAG","onError"+response.code());
+                    }
+                });
+            }
+        });
     }
 
     private void initToolbar() {
@@ -78,6 +101,12 @@ public class CartFragment extends Fragment implements View.OnClickListener {
 
         mToolbar.getRightButton().setOnClickListener(this);
         mToolbar.getRightButton().setTag(ACTION_EDIT);
+//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getActivity().finish();
+//            }
+//        });
     }
 
     private void initCartData() {

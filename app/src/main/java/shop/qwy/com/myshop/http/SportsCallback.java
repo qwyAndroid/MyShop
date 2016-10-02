@@ -1,6 +1,7 @@
 package shop.qwy.com.myshop.http;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.IOException;
@@ -9,6 +10,10 @@ import java.util.Date;
 import dmax.dialog.SpotsDialog;
 import okhttp3.Request;
 import okhttp3.Response;
+import shop.qwy.com.myshop.LoginActivity;
+import shop.qwy.com.myshop.MyApplication;
+import shop.qwy.com.myshop.R;
+import shop.qwy.com.myshop.utlis.ToastUtils;
 
 /**
  * created by qwyAndroid on 2016/9/22
@@ -53,5 +58,15 @@ public abstract class SportsCallback<T> extends BaseCallBack<T>{
 //        Log.e("TAG",new Date()+"");
     }
 
+    @Override
+    public void onTokenError(Response response, int code) {
+        ToastUtils.show(mContext, mContext.getString(R.string.token_error));
 
+        Intent intent = new Intent();
+        intent.setClass(mContext, LoginActivity.class);
+        mContext.startActivity(intent);
+
+        MyApplication.getInstance().clearUser();
+
+    }
 }

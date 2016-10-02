@@ -1,12 +1,15 @@
 package shop.qwy.com.myshop.http;
 
+import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import shop.qwy.com.myshop.MyApplication;
 
 /**
  * created by qwyAndroid on 2016/9/21
@@ -27,6 +31,10 @@ public class OkHttpHelper {
     private OkHttpClient mHttpClient;
     private Gson mGson;
     private Handler mHandler;
+
+    public static final int TOKEN_MISSING=401;// token 丢失
+    public static final int TOKEN_ERROR=402; // token 错误
+    public static final int TOKEN_EXPIRE=403; // token 过期
 
     static {
         mInstance = new OkHttpHelper();
@@ -49,12 +57,15 @@ public class OkHttpHelper {
     }
 
     public void get(String url,BaseCallBack callBack){
-        Request request = builderGetRequest(url);
+        get(url,null,callBack);
+    }
+    public void get(String url,Map<String,String> parmars,BaseCallBack callBack){
+        Request request = builderGetRequest(url,parmars);
         doRequest(request,callBack);
     }
+    private Request builderGetRequest(String url,Map<String,String> parmars) {
 
-    private Request builderGetRequest(String url) {
-        return builderRequest(url,HttpMethodType.GET,null);
+        return builderRequest(url,HttpMethodType.GET,parmars);
     }
 
     public void post(String url,Map<String,String> parmars,BaseCallBack callBack){
@@ -70,6 +81,10 @@ public class OkHttpHelper {
         Request.Builder builder = new Request.Builder()
                 .url(url);
         if (type == HttpMethodType.GET){
+
+            url = buildUrlParams(url,parmars);
+            builder.url(url);
+
             builder.get();
         }else if (type == HttpMethodType.POST){
             RequestBody body = builderFromData(parmars);
@@ -87,6 +102,10 @@ public class OkHttpHelper {
         FormBody.Builder builder = new FormBody.Builder();
         for (Map.Entry<String,String> entry : parmars.entrySet()){
             builder.add(entry.getKey(),entry.getValue());
+        }
+        String token = MyApplication.getInstance().getToken();
+        if (!TextUtils.isEmpty(token)){
+            builder.add("token",token);
         }
         return builder.build();
     }
@@ -107,7 +126,8 @@ public class OkHttpHelper {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                callBack.onResponse(response);
+//                callBack.onResponse(response);
+                callbackResponse(callBack,response);
                 if (response.isSuccessful()){
                     String resultStr = response.body().string();
                     if (callBack.mType == String.class){
@@ -121,13 +141,27 @@ public class OkHttpHelper {
                            callbackError(callBack,response,e);
                         }
                     }
-                }else{
+                }
+                else if(response.code() == TOKEN_ERROR||response.code() == TOKEN_EXPIRE ||response.code() == TOKEN_MISSING ){
+
+                    callbackTokenError(callBack,response);
+                }
+                else{
                     callBack.onError(response,response.code(),null);
                 }
             }
         });
     }
 
+    private void callbackTokenError(final  BaseCallBack callback , final Response response ){
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onTokenError(response,response.code());
+            }
+        });
+    }
     private void callBackSuccess(final BaseCallBack callBack, final Response response, final Object obj) {
         mHandler.post(new Runnable() {
             @Override
@@ -145,5 +179,44 @@ public class OkHttpHelper {
                 callback.onError(response,response.code(),e);
             }
         });
+    }
+
+    private void callbackResponse(final  BaseCallBack callback , final Response response ){
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onResponse(response);
+            }
+        });
+    }
+
+    private   String buildUrlParams(String url ,Map<String,String> params) {
+
+        if(params == null)
+            params = new HashMap<>(1);
+
+        String token = MyApplication.getInstance().getToken();
+        if(!TextUtils.isEmpty(token))
+            params.put("token",token);
+
+
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            sb.append(entry.getKey() + "=" + entry.getValue());
+            sb.append("&");
+        }
+        String s = sb.toString();
+        if (s.endsWith("&")) {
+            s = s.substring(0, s.length() - 1);
+        }
+
+        if(url.indexOf("?")>0){
+            url = url +"&"+s;
+        }else{
+            url = url +"?"+s;
+        }
+
+        return url;
     }
 }

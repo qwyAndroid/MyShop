@@ -1,5 +1,6 @@
 package shop.qwy.com.myshop.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import java.util.List;
 import okhttp3.Response;
 import shop.qwy.com.myshop.Contants;
 import shop.qwy.com.myshop.R;
+import shop.qwy.com.myshop.WearDetailActivity;
 import shop.qwy.com.myshop.adapter.BaseAdapter;
 import shop.qwy.com.myshop.adapter.BaseViewHolder;
 import shop.qwy.com.myshop.adapter.DividerItemDecoration;
@@ -83,7 +85,11 @@ public class HotFragment extends Fragment{
                             @Override
                             public void onItemClick(View view, int position) {
                                 Wears wears = (Wears) datas.get(position);
-                                Toast.makeText(getContext(),wears.getPrice()+"",Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getActivity(), WearDetailActivity.class);
+                                intent.putExtra(Contants.WARE,wears);
+                                startActivity(intent);
+                //      Toast.makeText(getContext(),wears.getPrice()+"",
+                                // Toast.LENGTH_SHORT).show();
                             }
                         });
                         mRecycleView.setAdapter(mAdapter);
@@ -171,6 +177,11 @@ public class HotFragment extends Fragment{
 
             @Override
             public void onError(Response response, int code, Exception e) {
+
+            }
+
+            @Override
+            public void onTokenError(Response response, int code) {
 
             }
         });

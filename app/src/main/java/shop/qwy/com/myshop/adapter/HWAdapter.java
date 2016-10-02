@@ -28,6 +28,8 @@ public class HWAdapter extends SimpleAdapter<Wears>{
         mCartProvider = new CartProvider(mContext);
     }
 
+
+
     @Override
     protected void bindData(BaseViewHolder holder, final Wears wares) {
         SimpleDraweeView draweeView = (SimpleDraweeView) holder.getView(R.id.drawee_view);
@@ -41,11 +43,13 @@ public class HWAdapter extends SimpleAdapter<Wears>{
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCartProvider.put(convertData(wares));
+                    mCartProvider.put(wares);
                     ToastUtils.show(mContext, "已添加到购物车");
                 }
             });
         }
+
+
     }
     public void  resetLayout(int layoutId){
 
@@ -56,15 +60,15 @@ public class HWAdapter extends SimpleAdapter<Wears>{
 
 
     }
-    public ShoppingCart convertData(Wears item){
-
-        ShoppingCart cart = new ShoppingCart();
-
-        cart.setId(item.getId());
-        cart.setImgUrl(item.getImgUrl());
-        cart.setName(item.getName());
-        cart.setPrice(item.getPrice());
-
-        return cart;
-    }
+//    public ShoppingCart convertData(Wears item){
+//
+//        ShoppingCart cart = new ShoppingCart();
+//
+//        cart.setId(item.getId());
+//        cart.setImgUrl(item.getImgUrl());
+//        cart.setName(item.getName());
+//        cart.setPrice(item.getPrice());
+//
+//        return cart;
+//    }
 }

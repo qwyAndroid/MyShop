@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".WearsListActivity"></activity>
+        <activity android:name=".WearDetailActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

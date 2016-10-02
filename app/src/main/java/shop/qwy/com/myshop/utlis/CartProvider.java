@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import shop.qwy.com.myshop.bean.ShoppingCart;
+import shop.qwy.com.myshop.bean.Wears;
 
 /**
  * created by qwyAndroid on 2016/9/25
@@ -36,6 +37,9 @@ public class CartProvider {
         }
         datas.put(cart.getId().intValue(),temp);
         commit();
+    }
+    public void put(Wears wear){
+        put(convertData(wear));
     }
     public void update(ShoppingCart cart){
         datas.put(cart.getId().intValue(),cart);
@@ -81,5 +85,17 @@ public class CartProvider {
              carts = JSONUtil.fromJson(json, new TypeToken<List<ShoppingCart>>() {}.getType());
         }
         return  carts;
+    }
+
+    public ShoppingCart convertData(Wears item){
+
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.setId(item.getId());
+        cart.setImgUrl(item.getImgUrl());
+        cart.setName(item.getName());
+        cart.setPrice(item.getPrice());
+
+        return cart;
     }
 }
